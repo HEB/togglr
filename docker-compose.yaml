@@ -1,0 +1,79 @@
+version: '3.5'
+services:
+   redis:
+      image: redis:latest
+      restart: always
+      container_name: togglr-redis
+      restart: always
+      ports:
+       - "6379:6379"
+      networks:
+        togglr:
+          ipv4_address: 172.28.100.100
+   db:
+      image: mysql:5.7
+      restart: always
+      container_name: togglr-mysql
+      restart: always
+      ports:
+       - "3306:3306"
+      environment:
+        - MYSQL_ROOT_PASSWORD=test
+        - MYSQL_USER=togglr
+        - MYSQL_PASSWORD=test
+        - MYSQL_DATABASE=togglr
+      networks:
+        togglr:
+          ipv4_address: 172.28.100.101
+   ui:
+      restart: always
+      container_name: togglr-ui
+      build: togglr-ui/
+      restart: always
+      ports:
+       - "3000:3000"
+      environment:
+        - NUXT_AXIOS_PREFIX=/togglr-api/
+        - NUXT_AXIOS_PROXY_URL=http://togglr-api:8080
+        - NUXT_AXIOS_DEBUG=true
+        - NUXT_AXIOS_HTTPS=false
+      networks:
+        togglr:
+          ipv4_address: 172.28.100.102
+   togglr-api:
+      depends_on:
+        - db
+        - redis
+      restart: always
+      container_name: togglr-api
+      build: togglr-api/
+      ports:
+       - "8080:8080"
+      links:
+        - redis
+        - db
+      environment:
+        - SERVER_SERVLET_SESSION_COOKIE_DOMAIN=127.0.0.1
+        - SSO_SAML_COOKIE_DOMAIN=127.0.0.1
+        - SERVER_SERVLET_CONTEXT-PATH=/togglr-api
+        - SPRING_DATASOURCE_URL=jdbc:mysql://db/togglr
+        - SPRING_DATASOURCE_USERNAME=togglr
+        - SPRING_DATASOURCE_PASSWORD=test
+        - SPRING_SECURITY_USER_PASSWORD=happy123
+        - SPRING_SECURITY_USER_NAME=sadc001
+        - SPRING_PROFILES_ACTIVE=clouddev,mysql
+        - HEB_TOGGLR_APP-DOMAIN=localhost
+        - HEB_TOGGLR_CLIENT_APP-ID=1
+        - HEB_TOGGLR_CLIENT_SERVER-URL=http://localhost:8080/togglr-api/features/active
+        - HEB_TOGGLR_CACHE-TIME=10000
+        - REDIS_HOST=redis://togglr-redis
+        - REDIS_PORT=6379
+      networks:
+        togglr:
+          ipv4_address: 172.28.100.103
+networks:
+    togglr:
+      ipam:
+        driver: default
+        config:
+            - subnet: 172.28.100.0/16

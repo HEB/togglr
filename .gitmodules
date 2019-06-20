@@ -1,0 +1,12 @@
+[submodule "togglr-ui"]
+	path = togglr-ui
+	url = https://github.com/HEB/togglr-ui.git
+[submodule "togglr-api"]
+	path = togglr-api
+	url = https://github.com/HEB/togglr-api.git
+[submodule "togglr-client"]
+	path = togglr-client
+	url = https://github.com/HEB/togglr-client.git
+[submodule "togglr-mysql"]
+	path = togglr-mysql
+	url = https://github.com/HEB/togglr-mysql.git
