@@ -6,9 +6,6 @@ services:
       container_name: togglr-redis
       ports:
        - "6379:6379"
-      networks:
-        togglr:
-          ipv4_address: 172.28.100.100
    db:
       image: mysql:5.7
       restart: always
@@ -23,9 +20,6 @@ services:
       volumes:
         - db_data:/var/lib/mysql
         - ./togglr-mysql/sql-scripts:/docker-entrypoint-initdb.d
-      networks:
-        togglr:
-          ipv4_address: 172.28.100.101
    ui:
       restart: always
       container_name: togglr-ui
@@ -34,12 +28,11 @@ services:
        - "3000:3000"
       environment:
         - NUXT_AXIOS_PREFIX=/togglr-api/
-        - NUXT_AXIOS_PROXY_URL=http://togglr-api:8080
+        - NUXT_AXIOS_PROXY_URL=http://togglr-api:8080/togglr-api/*
         - NUXT_AXIOS_DEBUG=true
         - NUXT_AXIOS_HTTPS=false
-      networks:
-        togglr:
-          ipv4_address: 172.28.100.102
+        - FORWARDED_HOST=localhost:8080
+        - NUXT_PROXY_ENABLED=true
    togglr-api:
       depends_on:
         - db
@@ -56,8 +49,8 @@ services:
         # Mount the .m2 cache for re-use of dependencies
         - ~/.m2/:/root/.m2/
       environment:
-        - SERVER_SERVLET_SESSION_COOKIE_DOMAIN=127.0.0.1
-        - SSO_SAML_COOKIE_DOMAIN=127.0.0.1
+        - SERVER_SERVLET_SESSION_COOKIE_DOMAIN=localhost
+        - SSO_SAML_COOKIE_DOMAIN=localhost
         - SERVER_SERVLET_CONTEXT-PATH=/togglr-api
         - SPRING_DATASOURCE_URL=jdbc:mysql://db/togglr
         - SPRING_DATASOURCE_USERNAME=togglr
@@ -71,14 +64,5 @@ services:
         - HEB_TOGGLR_CACHE-TIME=10000
         - REDIS_HOST=redis://togglr-redis
         - REDIS_PORT=6379
-      networks:
-        togglr:
-          ipv4_address: 172.28.100.103
-networks:
-    togglr:
-      ipam:
-        driver: default
-        config:
-            - subnet: 172.28.100.0/16
 volumes:
   db_data:
