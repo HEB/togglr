@@ -24,6 +24,9 @@ services:
       restart: always
       container_name: togglr-ui
       build: togglr-ui/
+      volumes:
+        - ./togglr-ui/:/app
+        - /app/node_modules
       ports:
        - "3000:3000"
       environment:
