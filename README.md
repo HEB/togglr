@@ -1,7 +1,7 @@
 <img src="assets/tglr-logo-color.svg" width="400" height="200" />
 
 Togglr is an open source, feature flagging application written by H-E-B.  Togglr consists of 5 base components.
-- [API](https://github.com/HEB/togglr-api) - Spring Boot application to manage all interactions with Togglr DB and provide base functionality.
+- [API](https://github.com/HEB/togglr-api) - Spring Boot application to manage all interactions with Togglr DB, oauth provider (for single sign on) and provide base functionality.
 - [Client](https://github.com/HEB/togglr-client) - Spring Boot client written to abstract usage of The Togglr API.  Consumed as a JAR.
 - [Mysql DB](https://github.com/HEB/togglr-mysql) - Simple docker container with init scripts.  Meant to be replaced with a more permanent solution in production.
 - [UI](https://github.com/HEB/togglr-ui) - Nuxt/VueJS application for interacting with API and management of Feature Flags
