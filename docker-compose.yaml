@@ -66,5 +66,13 @@ services:
       - HEB_TOGGLR_CACHE-TIME=10000
       - REDIS_HOST=redis://togglr-redis
       - REDIS_PORT=6379
+      - HEBTOGGLROAUTHENABLED=false
+      - OAUTHCLIENTID=
+      - OAUTHCLIENTSECRET=
+      - OAUTHACCESSTOKENURI=
+      - OAUTHREDIRECTURL=
+      - OAUTHUSERAUTHORIZATIONURI=
+      - OAUTHUSERINFOURI=
+      - OAUTHUSERIDFIELD=
 volumes: 
   db_data:
